@@ -95,7 +95,7 @@ class GeminiClient(LLMClient):
     no further fixes). Free-tier eligible models as of this writing:
     gemini-2.5-flash, gemini-2.5-flash-lite, gemini-2.5-pro."""
 
-    def __init__(self, model: str = "gemini-2.5-flash", api_key: str | None = None):
+    def __init__(self, model: str = "gemini-3.6-flash", api_key: str | None = None):
         from google import genai  # local import: only required if this provider is used
 
         self.model = model
