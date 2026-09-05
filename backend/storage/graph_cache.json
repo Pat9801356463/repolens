@@ -1,0 +1,357 @@
+{
+  "nodes": [
+    {
+      "id": "services/notifier.py",
+      "type": "FILE",
+      "name": "notifier.py",
+      "file": "services/notifier.py",
+      "line_start": 1,
+      "line_end": 0,
+      "metadata": {
+        "module": "services.notifier"
+      }
+    },
+    {
+      "id": "services/notifier.py::send_receipt",
+      "type": "FUNCTION",
+      "name": "send_receipt",
+      "file": "services/notifier.py",
+      "line_start": 1,
+      "line_end": 2,
+      "metadata": {
+        "qualified_name": "send_receipt",
+        "is_method": false
+      }
+    },
+    {
+      "id": "services/notifier.py::send_alert",
+      "type": "FUNCTION",
+      "name": "send_alert",
+      "file": "services/notifier.py",
+      "line_start": 5,
+      "line_end": 6,
+      "metadata": {
+        "qualified_name": "send_alert",
+        "is_method": false
+      }
+    },
+    {
+      "id": "services/__init__.py",
+      "type": "FILE",
+      "name": "__init__.py",
+      "file": "services/__init__.py",
+      "line_start": 1,
+      "line_end": 0,
+      "metadata": {
+        "module": "services"
+      }
+    },
+    {
+      "id": "services/payment.py",
+      "type": "FILE",
+      "name": "payment.py",
+      "file": "services/payment.py",
+      "line_start": 1,
+      "line_end": 0,
+      "metadata": {
+        "module": "services.payment"
+      }
+    },
+    {
+      "id": "services/payment.py::PaymentError",
+      "type": "CLASS",
+      "name": "PaymentError",
+      "file": "services/payment.py",
+      "line_start": 5,
+      "line_end": 6,
+      "metadata": {}
+    },
+    {
+      "id": "services/payment.py::PaymentService",
+      "type": "CLASS",
+      "name": "PaymentService",
+      "file": "services/payment.py",
+      "line_start": 9,
+      "line_end": 19,
+      "metadata": {}
+    },
+    {
+      "id": "services/payment.py::PaymentService.__init__",
+      "type": "FUNCTION",
+      "name": "__init__",
+      "file": "services/payment.py",
+      "line_start": 10,
+      "line_end": 11,
+      "metadata": {
+        "qualified_name": "PaymentService.__init__",
+        "is_method": true
+      }
+    },
+    {
+      "id": "services/payment.py::PaymentService.charge",
+      "type": "FUNCTION",
+      "name": "charge",
+      "file": "services/payment.py",
+      "line_start": 13,
+      "line_end": 16,
+      "metadata": {
+        "qualified_name": "PaymentService.charge",
+        "is_method": true
+      }
+    },
+    {
+      "id": "services/payment.py::PaymentService._call_stripe",
+      "type": "FUNCTION",
+      "name": "_call_stripe",
+      "file": "services/payment.py",
+      "line_start": 18,
+      "line_end": 19,
+      "metadata": {
+        "qualified_name": "PaymentService._call_stripe",
+        "is_method": true
+      }
+    },
+    {
+      "id": "services/payment.py::process_payment",
+      "type": "FUNCTION",
+      "name": "process_payment",
+      "file": "services/payment.py",
+      "line_start": 22,
+      "line_end": 24,
+      "metadata": {
+        "qualified_name": "process_payment",
+        "is_method": false
+      }
+    },
+    {
+      "id": "services/orders.py",
+      "type": "FILE",
+      "name": "orders.py",
+      "file": "services/orders.py",
+      "line_start": 1,
+      "line_end": 0,
+      "metadata": {
+        "module": "services.orders"
+      }
+    },
+    {
+      "id": "services/orders.py::RefundableOrder",
+      "type": "CLASS",
+      "name": "RefundableOrder",
+      "file": "services/orders.py",
+      "line_start": 5,
+      "line_end": 7,
+      "metadata": {}
+    },
+    {
+      "id": "services/orders.py::RefundableOrder.refund",
+      "type": "FUNCTION",
+      "name": "refund",
+      "file": "services/orders.py",
+      "line_start": 6,
+      "line_end": 7,
+      "metadata": {
+        "qualified_name": "RefundableOrder.refund",
+        "is_method": true
+      }
+    },
+    {
+      "id": "services/orders.py::create_order",
+      "type": "FUNCTION",
+      "name": "create_order",
+      "file": "services/orders.py",
+      "line_start": 10,
+      "line_end": 14,
+      "metadata": {
+        "qualified_name": "create_order",
+        "is_method": false
+      }
+    },
+    {
+      "id": "tests/test_payment.py",
+      "type": "TEST",
+      "name": "test_payment.py",
+      "file": "tests/test_payment.py",
+      "line_start": 1,
+      "line_end": 0,
+      "metadata": {
+        "module": "tests.test_payment"
+      }
+    },
+    {
+      "id": "tests/test_payment.py::test_process_payment",
+      "type": "FUNCTION",
+      "name": "test_process_payment",
+      "file": "tests/test_payment.py",
+      "line_start": 4,
+      "line_end": 5,
+      "metadata": {
+        "qualified_name": "test_process_payment",
+        "is_method": false
+      }
+    },
+    {
+      "id": "EXTERNAL::stripe",
+      "type": "EXTERNAL_SERVICE",
+      "name": "stripe",
+      "file": "",
+      "line_start": 0,
+      "line_end": 0,
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    {
+      "source": "services/notifier.py",
+      "target": "services/notifier.py::send_receipt",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/notifier.py",
+      "target": "services/notifier.py::send_alert",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/payment.py",
+      "target": "services/payment.py::PaymentError",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/payment.py",
+      "target": "services/payment.py::PaymentService",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/payment.py",
+      "target": "services/payment.py::process_payment",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/payment.py",
+      "target": "EXTERNAL::stripe",
+      "type": "IMPORTS",
+      "metadata": {
+        "line": 1
+      }
+    },
+    {
+      "source": "services/payment.py",
+      "target": "services/notifier.py",
+      "type": "IMPORTS",
+      "metadata": {
+        "line": 2
+      }
+    },
+    {
+      "source": "services/payment.py::PaymentService",
+      "target": "services/payment.py::PaymentService.__init__",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/payment.py::PaymentService",
+      "target": "services/payment.py::PaymentService.charge",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/payment.py::PaymentService",
+      "target": "services/payment.py::PaymentService._call_stripe",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/payment.py::PaymentService.charge",
+      "target": "services/notifier.py::send_receipt",
+      "type": "CALLS",
+      "metadata": {
+        "line": 15
+      }
+    },
+    {
+      "source": "services/orders.py",
+      "target": "services/orders.py::RefundableOrder",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/orders.py",
+      "target": "services/orders.py::create_order",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/orders.py",
+      "target": "services/payment.py",
+      "type": "IMPORTS",
+      "metadata": {
+        "line": 1
+      }
+    },
+    {
+      "source": "services/orders.py",
+      "target": "services/notifier.py",
+      "type": "IMPORTS",
+      "metadata": {
+        "line": 2
+      }
+    },
+    {
+      "source": "services/orders.py::RefundableOrder",
+      "target": "services/orders.py::RefundableOrder.refund",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "services/orders.py::RefundableOrder.refund",
+      "target": "services/notifier.py::send_alert",
+      "type": "CALLS",
+      "metadata": {
+        "line": 7
+      }
+    },
+    {
+      "source": "services/orders.py::create_order",
+      "target": "services/payment.py::process_payment",
+      "type": "CALLS",
+      "metadata": {
+        "line": 12
+      }
+    },
+    {
+      "source": "services/orders.py::create_order",
+      "target": "services/notifier.py::send_alert",
+      "type": "CALLS",
+      "metadata": {
+        "line": 14
+      }
+    },
+    {
+      "source": "tests/test_payment.py",
+      "target": "tests/test_payment.py::test_process_payment",
+      "type": "DEFINES",
+      "metadata": {}
+    },
+    {
+      "source": "tests/test_payment.py",
+      "target": "services/payment.py",
+      "type": "IMPORTS",
+      "metadata": {
+        "line": 1
+      }
+    },
+    {
+      "source": "tests/test_payment.py::test_process_payment",
+      "target": "services/payment.py::process_payment",
+      "type": "CALLS",
+      "metadata": {
+        "line": 5
+      }
+    }
+  ]
+}

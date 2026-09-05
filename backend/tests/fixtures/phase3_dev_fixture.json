@@ -1,0 +1,133 @@
+{
+  "nodes": [
+    {
+      "id": "api.py",
+      "type": "FILE",
+      "name": "api.py",
+      "file": "api.py",
+      "line_start": 1,
+      "line_end": 40,
+      "metadata": {
+        "source_snippet": "from fastapi import FastAPI\nfrom services.payment import PaymentService\nfrom services.notifications import send_receipt\n\napp = FastAPI()\npayment_service = PaymentService()\n\n@app.post('/api/pay')\ndef pay(order_id: str, amount: float, card_token: str):\n    result = payment_service.process_payment(order_id, amount, card_token)\n    send_receipt(order_id, result)\n    return result"
+      }
+    },
+    {
+      "id": "api.py::pay",
+      "type": "API_ROUTE",
+      "name": "pay",
+      "file": "api.py",
+      "line_start": 8,
+      "line_end": 12,
+      "metadata": {
+        "route": "/api/pay",
+        "method": "POST",
+        "source_snippet": "@app.post('/api/pay')\ndef pay(order_id: str, amount: float, card_token: str):\n    result = payment_service.process_payment(order_id, amount, card_token)\n    send_receipt(order_id, result)\n    return result"
+      }
+    },
+    {
+      "id": "services/payment.py",
+      "type": "FILE",
+      "name": "payment.py",
+      "file": "services/payment.py",
+      "line_start": 1,
+      "line_end": 60,
+      "metadata": {
+        "source_snippet": "import stripe\nfrom services.validators import validate_card\n\nclass PaymentService:\n    def process_payment(self, order_id, amount, card_token):\n        if not validate_card(card_token):\n            raise ValueError('invalid card')\n        charge = stripe.Charge.create(amount=amount, source=card_token)\n        return {'order_id': order_id, 'status': 'charged', 'charge_id': charge.id}"
+      }
+    },
+    {
+      "id": "services/payment.py::PaymentService",
+      "type": "CLASS",
+      "name": "PaymentService",
+      "file": "services/payment.py",
+      "line_start": 4,
+      "line_end": 9,
+      "metadata": {
+        "docstring": "Handles card validation and charge creation via Stripe.",
+        "source_snippet": "class PaymentService:\n    def process_payment(self, order_id, amount, card_token):\n        if not validate_card(card_token):\n            raise ValueError('invalid card')\n        charge = stripe.Charge.create(amount=amount, source=card_token)\n        return {'order_id': order_id, 'status': 'charged', 'charge_id': charge.id}"
+      }
+    },
+    {
+      "id": "services/payment.py::PaymentService.process_payment",
+      "type": "FUNCTION",
+      "name": "process_payment",
+      "file": "services/payment.py",
+      "line_start": 5,
+      "line_end": 9,
+      "metadata": {
+        "signature": "process_payment(self, order_id, amount, card_token)",
+        "source_snippet": "def process_payment(self, order_id, amount, card_token):\n    if not validate_card(card_token):\n        raise ValueError('invalid card')\n    charge = stripe.Charge.create(amount=amount, source=card_token)\n    return {'order_id': order_id, 'status': 'charged', 'charge_id': charge.id}"
+      }
+    },
+    {
+      "id": "services/validators.py::validate_card",
+      "type": "FUNCTION",
+      "name": "validate_card",
+      "file": "services/validators.py",
+      "line_start": 1,
+      "line_end": 8,
+      "metadata": {
+        "signature": "validate_card(card_token)",
+        "source_snippet": "def validate_card(card_token):\n    if not card_token or len(card_token) < 8:\n        return False\n    return card_token.startswith('tok_')"
+      }
+    },
+    {
+      "id": "services/notifications.py::send_receipt",
+      "type": "FUNCTION",
+      "name": "send_receipt",
+      "file": "services/notifications.py",
+      "line_start": 1,
+      "line_end": 6,
+      "metadata": {
+        "signature": "send_receipt(order_id, result)",
+        "source_snippet": "def send_receipt(order_id, result):\n    print(f'Receipt sent for {order_id}: {result}')"
+      }
+    },
+    {
+      "id": "stripe",
+      "type": "EXTERNAL_SERVICE",
+      "name": "stripe",
+      "file": "",
+      "line_start": 0,
+      "line_end": 0,
+      "metadata": {"note": "third-party package, not parsed"}
+    },
+    {
+      "id": "tests/test_payment.py",
+      "type": "TEST",
+      "name": "test_payment.py",
+      "file": "tests/test_payment.py",
+      "line_start": 1,
+      "line_end": 15,
+      "metadata": {
+        "source_snippet": "def test_process_payment_valid_card():\n    service = PaymentService()\n    result = service.process_payment('o1', 10.0, 'tok_123')\n    assert result['status'] == 'charged'"
+      }
+    },
+    {
+      "id": "config.py",
+      "type": "CONFIG",
+      "name": "config.py",
+      "file": "config.py",
+      "line_start": 1,
+      "line_end": 5,
+      "metadata": {
+        "source_snippet": "STRIPE_API_KEY = 'sk_test_placeholder'\nMIN_CARD_TOKEN_LENGTH = 8"
+      }
+    }
+  ],
+  "edges": [
+    {"source": "api.py", "target": "api.py::pay", "type": "DEFINES", "metadata": {}},
+    {"source": "api.py", "target": "api.py::pay", "type": "EXPOSES", "metadata": {}},
+    {"source": "api.py::pay", "target": "services/payment.py::PaymentService.process_payment", "type": "CALLS", "metadata": {"line": 10}},
+    {"source": "api.py::pay", "target": "services/notifications.py::send_receipt", "type": "CALLS", "metadata": {"line": 11}},
+    {"source": "api.py", "target": "services/payment.py", "type": "IMPORTS", "metadata": {}},
+    {"source": "api.py", "target": "services/notifications.py::send_receipt", "type": "IMPORTS", "metadata": {}},
+    {"source": "services/payment.py", "target": "services/payment.py::PaymentService", "type": "DEFINES", "metadata": {}},
+    {"source": "services/payment.py::PaymentService", "target": "services/payment.py::PaymentService.process_payment", "type": "DEFINES", "metadata": {}},
+    {"source": "services/payment.py::PaymentService.process_payment", "target": "services/validators.py::validate_card", "type": "CALLS", "metadata": {"line": 6}},
+    {"source": "services/payment.py::PaymentService.process_payment", "target": "stripe", "type": "CALLS", "metadata": {"line": 8}},
+    {"source": "services/payment.py", "target": "stripe", "type": "IMPORTS", "metadata": {}},
+    {"source": "services/payment.py", "target": "services/validators.py::validate_card", "type": "IMPORTS", "metadata": {}},
+    {"source": "tests/test_payment.py", "target": "services/payment.py::PaymentService.process_payment", "type": "TESTS", "metadata": {}}
+  ]
+}

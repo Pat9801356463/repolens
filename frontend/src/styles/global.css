@@ -1,0 +1,64 @@
+:root {
+  --bg-deep: #0b1220;
+  --bg-panel: #161f2e;
+  --bg-panel-raised: #1c2733;
+  --border: #2a3a4d;
+  --border-soft: #223040;
+  --text-primary: #e6edf3;
+  --text-muted: #8b98a5;
+  --accent-amber: #f5a623;
+  --accent-amber-dim: #4a3a1c;
+  --risk-critical: #e5484d;
+  --risk-high: #f5a623;
+  --risk-medium: #d4b106;
+  --pass-green: #3fb950;
+
+  --font-ui: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: var(--font-ui);
+  cursor: pointer;
+}
+
+code,
+.mono {
+  font-family: var(--font-mono);
+}
+
+::selection {
+  background: var(--accent-amber-dim);
+}
+
+/* visible keyboard focus everywhere, per quality floor */
+:focus-visible {
+  outline: 2px solid var(--accent-amber);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
