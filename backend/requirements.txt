@@ -11,7 +11,7 @@ networkx>=3.0
 # defaults to "mock" (no key, no network — safe for dev/CI).
 # anthropic>=0.40
 # openai>=1.50
-# google-genai>=1.0   # current SDK — NOT google-generativeai, which Google retired Nov 30, 2025
+google-genai>=1.0   # current SDK — NOT google-generativeai, which Google retired Nov 30, 2025
 
 # Phase 5 — backend integration + test-gen pre-bake
 fastapi>=0.115
