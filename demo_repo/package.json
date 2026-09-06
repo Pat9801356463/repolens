@@ -1,0 +1,26 @@
+{
+  "name": "astram-command-iq",
+  "version": "3.0.0",
+  "description": "ASTRAM Command IQ — AI Traffic Intelligence Platform for Bengaluru",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js,.jsx"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.10.4",
+    "lucide-react": "^0.383.0",
+    "papaparse": "^5.4.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.12",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.0",
+    "eslint-plugin-react-hooks": "^4.6.0"
+  }
+}
