@@ -1,0 +1,167 @@
+{
+  "nodes": [
+    {
+      "id": "app.py",
+      "type": "FILE",
+      "name": "app.py",
+      "file": "app.py",
+      "line_start": 1,
+      "line_end": 20,
+      "metadata": {}
+    },
+    {
+      "id": "api/routes.py",
+      "type": "FILE",
+      "name": "routes.py",
+      "file": "api/routes.py",
+      "line_start": 1,
+      "line_end": 60,
+      "metadata": {}
+    },
+    {
+      "id": "api/routes.py::POST /payment",
+      "type": "API_ROUTE",
+      "name": "POST /payment",
+      "file": "api/routes.py",
+      "line_start": 22,
+      "line_end": 30,
+      "metadata": { "decorators": ["@app.post('/payment')"] }
+    },
+    {
+      "id": "services/payment.py",
+      "type": "FILE",
+      "name": "payment.py",
+      "file": "services/payment.py",
+      "line_start": 1,
+      "line_end": 80,
+      "metadata": {}
+    },
+    {
+      "id": "services/payment.py::PaymentService",
+      "type": "CLASS",
+      "name": "PaymentService",
+      "file": "services/payment.py",
+      "line_start": 10,
+      "line_end": 78,
+      "metadata": { "docstring": "Handles payment processing and Stripe integration." }
+    },
+    {
+      "id": "services/payment.py::process_payment",
+      "type": "FUNCTION",
+      "name": "process_payment",
+      "file": "services/payment.py",
+      "line_start": 15,
+      "line_end": 24,
+      "metadata": {
+        "signature": "process_payment(user_id: int) -> Payment | None",
+        "docstring": "Looks up the user, charges via Stripe, and saves the transaction. Returns None if the user has no valid payment method."
+      }
+    },
+    {
+      "id": "services/user.py",
+      "type": "FILE",
+      "name": "user.py",
+      "file": "services/user.py",
+      "line_start": 1,
+      "line_end": 40,
+      "metadata": {}
+    },
+    {
+      "id": "services/user.py::get_user",
+      "type": "FUNCTION",
+      "name": "get_user",
+      "file": "services/user.py",
+      "line_start": 8,
+      "line_end": 14,
+      "metadata": { "signature": "get_user(user_id: int) -> User" }
+    },
+    {
+      "id": "database/db.py",
+      "type": "FILE",
+      "name": "db.py",
+      "file": "database/db.py",
+      "line_start": 1,
+      "line_end": 30,
+      "metadata": {}
+    },
+    {
+      "id": "database/db.py::save_transaction",
+      "type": "FUNCTION",
+      "name": "save_transaction",
+      "file": "database/db.py",
+      "line_start": 12,
+      "line_end": 20,
+      "metadata": { "signature": "save_transaction(result: ChargeResult) -> None" }
+    },
+    {
+      "id": "stripe",
+      "type": "EXTERNAL_SERVICE",
+      "name": "stripe",
+      "file": "",
+      "line_start": 0,
+      "line_end": 0,
+      "metadata": {}
+    },
+    {
+      "id": "api/checkout.py",
+      "type": "FILE",
+      "name": "checkout.py",
+      "file": "api/checkout.py",
+      "line_start": 1,
+      "line_end": 50,
+      "metadata": {}
+    },
+    {
+      "id": "api/checkout.py::checkout",
+      "type": "FUNCTION",
+      "name": "checkout",
+      "file": "api/checkout.py",
+      "line_start": 40,
+      "line_end": 48,
+      "metadata": {
+        "signature": "checkout(user_id: int) -> Response",
+        "docstring": "Assumes process_payment always returns a Payment object; does not currently handle None."
+      }
+    },
+    {
+      "id": "tests/test_payment.py",
+      "type": "FILE",
+      "name": "test_payment.py",
+      "file": "tests/test_payment.py",
+      "line_start": 1,
+      "line_end": 25,
+      "metadata": {}
+    },
+    {
+      "id": "tests/test_payment.py::test_process_payment_success",
+      "type": "TEST",
+      "name": "test_process_payment_success",
+      "file": "tests/test_payment.py",
+      "line_start": 5,
+      "line_end": 12,
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    { "source": "api/routes.py", "target": "api/routes.py::POST /payment", "type": "EXPOSES", "metadata": {} },
+    { "source": "services/payment.py", "target": "services/payment.py::PaymentService", "type": "DEFINES", "metadata": {} },
+    { "source": "services/payment.py::PaymentService", "target": "services/payment.py::process_payment", "type": "DEFINES", "metadata": {} },
+    { "source": "services/user.py", "target": "services/user.py::get_user", "type": "DEFINES", "metadata": {} },
+    { "source": "database/db.py", "target": "database/db.py::save_transaction", "type": "DEFINES", "metadata": {} },
+    { "source": "api/checkout.py", "target": "api/checkout.py::checkout", "type": "DEFINES", "metadata": {} },
+    { "source": "tests/test_payment.py", "target": "tests/test_payment.py::test_process_payment_success", "type": "DEFINES", "metadata": {} },
+
+    { "source": "api/routes.py::POST /payment", "target": "services/payment.py::process_payment", "type": "CALLS", "metadata": { "call_site_line": 25 } },
+    { "source": "services/payment.py::process_payment", "target": "services/user.py::get_user", "type": "CALLS", "metadata": { "call_site_line": 16 } },
+    { "source": "services/payment.py::process_payment", "target": "stripe", "type": "CALLS", "metadata": { "call_site_line": 18 } },
+    { "source": "services/payment.py::process_payment", "target": "database/db.py::save_transaction", "type": "CALLS", "metadata": { "call_site_line": 22 } },
+    { "source": "api/checkout.py::checkout", "target": "services/payment.py::process_payment", "type": "CALLS", "metadata": { "call_site_line": 44 } },
+
+    { "source": "api/routes.py", "target": "services/payment.py", "type": "IMPORTS", "metadata": {} },
+    { "source": "services/payment.py", "target": "services/user.py", "type": "IMPORTS", "metadata": {} },
+    { "source": "services/payment.py", "target": "database/db.py", "type": "IMPORTS", "metadata": {} },
+    { "source": "api/checkout.py", "target": "services/payment.py", "type": "IMPORTS", "metadata": {} },
+
+    { "source": "tests/test_payment.py::test_process_payment_success", "target": "services/payment.py::process_payment", "type": "TESTS", "metadata": {} }
+  ]
+}
