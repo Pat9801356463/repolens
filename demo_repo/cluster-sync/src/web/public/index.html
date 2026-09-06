@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SyncMesh | P2P Cluster File Synchronization Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">SYNCMESH</span>
+          <span class="brand-subtitle">Nutanix Track 2 // P2P Swarm & Merkle Cluster Sync</span>
+        </div>
+      </div>
+
+      <!-- Scale Selector -->
+      <div class="scale-selector">
+        <span class="scale-label">Cluster Scale:</span>
+        <button class="scale-btn" data-scale="10">10 Nodes</button>
+        <button class="scale-btn" data-scale="50">50 Nodes</button>
+        <button class="scale-btn active" data-scale="100">100 Nodes</button>
+      </div>
+
+      <!-- Controls -->
+      <div class="top-controls">
+        <button id="btnP2PSync" class="btn btn-primary">
+          <span class="btn-icon">🚀</span>
+          <span>Sync P2P Tree ($O(\log N)$)</span>
+        </button>
+        <button id="btnDeltaSync" class="btn btn-secondary">
+          <span>⚡ Delta Sync (1 Chunk)</span>
+        </button>
+        <button id="btnCompare" class="btn btn-outline">
+          <span>⚖️ Star vs P2P</span>
+        </button>
+        <button id="btnReset" class="btn btn-ghost" title="Reset Cluster">
+          <span>↺ Reset</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Metrics Row -->
+    <main class="dashboard-grid">
+      <section class="metrics-row">
+        <!-- Egress Saved Card -->
+        <div class="metric-card highlight-card">
+          <div class="metric-header">
+            <span class="metric-label">MASTER EGRESS BANDWIDTH SAVED</span>
+            <span class="badge badge-success" id="egressSavedBadge">97.98% Saved</span>
+          </div>
+          <div class="metric-dual-value">
+            <div class="val-group">
+              <span class="val-sub">Centralized Star</span>
+              <span class="val-number text-danger" id="starEgressVal">198.0 MB</span>
+            </div>
+            <div class="val-divider">vs</div>
+            <div class="val-group">
+              <span class="val-sub">SyncMesh P2P</span>
+              <span class="val-number text-success" id="p2pEgressVal">4.0 MB</span>
+            </div>
+          </div>
+          <div class="metric-footer">
+            <span>Source node network interface offloaded by 98%</span>
+          </div>
+        </div>
+
+        <!-- Speedup Factor Card -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">PARALLEL PIPELINE SPEEDUP</span>
+            <span class="badge badge-purple" id="speedupBadge">46.2x Faster</span>
+          </div>
+          <div class="metric-single-value">
+            <span class="val-number text-purple" id="speedupVal">46.2x</span>
+            <span class="val-unit">vs centralized star</span>
+          </div>
+          <div class="metric-footer">
+            <span>Logarithmic $O(\log N)$ tree depth vs linear $O(N)$</span>
+          </div>
+        </div>
+
+        <!-- Nodes Synced Card -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">CLUSTER CONVERGENCE</span>
+            <span class="badge badge-info" id="convergenceBadge">100/100 Nodes</span>
+          </div>
+          <div class="metric-single-value">
+            <span class="val-number text-cyan" id="nodesSyncedVal">1 / 100</span>
+            <span class="val-unit">replicas converged</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="syncProgressBar" style="width: 1%;"></div>
+          </div>
+          <div class="metric-footer">
+            <span>Active replication across cluster nodes</span>
+          </div>
+        </div>
+
+        <!-- Merkle Integrity Card -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">MERKLE ROOT INTEGRITY</span>
+            <span class="badge badge-emerald">100% Verified</span>
+          </div>
+          <div class="metric-single-value">
+            <span class="val-number text-emerald" id="merkleHashSnippet">a8f2...9c10</span>
+          </div>
+          <div class="metric-footer">
+            <span>SHA-256 content-addressable block validation</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Center Row: 100-Node Matrix & Comparison -->
+      <section class="visual-row">
+        <!-- 100-Node Matrix Grid -->
+        <div class="matrix-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h3>Cluster Node Matrix (<span id="activeNodeCount">100</span> Nodes)</h3>
+              <p>Node 000 is Source (Purple). Watch P2P chunks pipeline to peers (Green) in real time.</p>
+            </div>
+            <div class="matrix-legend">
+              <span class="legend-item"><span class="legend-dot source-dot"></span> Source (Node 0)</span>
+              <span class="legend-item"><span class="legend-dot idle-dot"></span> Idle</span>
+              <span class="legend-item"><span class="legend-dot syncing-dot"></span> Pipelining</span>
+              <span class="legend-item"><span class="legend-dot synced-dot"></span> Synced</span>
+            </div>
+          </div>
+          <div class="nodes-grid" id="nodesGrid">
+            <!-- Dynamically populated 100 node cells -->
+          </div>
+        </div>
+
+        <!-- Comparison & Merkle Info Deck -->
+        <div class="side-panel">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <h3>Architectural Comparison</h3>
+              <span class="badge badge-neutral">100 Machines</span>
+            </div>
+            <div class="comparison-bars">
+              <div class="comp-group">
+                <div class="comp-label">
+                  <span>Master Egress Data (MB)</span>
+                  <span class="comp-sub text-danger">Lower is better</span>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-name">Centralized Star:</span>
+                  <div class="bar-track"><div class="bar-fill star-fill" style="width: 100%;"></div></div>
+                  <span class="bar-num">198 MB</span>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-name">SyncMesh P2P:</span>
+                  <div class="bar-track"><div class="bar-fill p2p-fill" style="width: 2%;"></div></div>
+                  <span class="bar-num text-success">4 MB</span>
+                </div>
+              </div>
+
+              <div class="comp-group">
+                <div class="comp-label">
+                  <span>Sync Time ($O(N)$ vs $O(\log N)$)</span>
+                  <span class="comp-sub text-danger">Lower is better</span>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-name">Centralized Star:</span>
+                  <div class="bar-track"><div class="bar-fill star-fill" style="width: 100%;"></div></div>
+                  <span class="bar-num">16.6s</span>
+                </div>
+                <div class="bar-row">
+                  <span class="bar-name">SyncMesh P2P:</span>
+                  <div class="bar-track"><div class="bar-fill p2p-fill" style="width: 3%;"></div></div>
+                  <span class="bar-num text-success">0.36s</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Merkle Chunk Spec -->
+          <div class="glass-panel">
+            <div class="panel-header">
+              <h3>Merkle File Metadata</h3>
+              <span class="badge badge-info">Active Replicant</span>
+            </div>
+            <div class="meta-list">
+              <div class="meta-item"><span>File:</span> <strong id="metaFilename">nutanix-workload.tar</strong></div>
+              <div class="meta-item"><span>Total Chunks:</span> <strong id="metaChunks">32 chunks (32 KB each)</strong></div>
+              <div class="meta-item"><span>Vector Clock:</span> <strong id="metaClock">{ Node-000: 1 }</strong></div>
+              <div class="meta-item"><span>Tree Depth:</span> <strong>7 hops (Binary Mesh)</strong></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Row: Real-time Event Feed -->
+      <section class="bottom-row">
+        <div class="glass-panel log-panel">
+          <div class="panel-header">
+            <h3>P2P Mesh Chunk Transfer Stream</h3>
+            <span class="badge badge-success">Live Gossip</span>
+          </div>
+          <div class="log-stream" id="logStream">
+            <div class="log-item initial">Cluster initialized with 100 nodes. Ready for sync.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

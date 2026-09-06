@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TailSquash | Predictive Hedged-Request Proxy & Tail-Latency Fabric</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js for High-Frequency Telemetry -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">TAILSQUASH</span>
+          <span class="brand-subtitle">Nutanix Cloud Systems // Predictive Request Hedging</span>
+        </div>
+      </div>
+
+      <div class="cluster-status-pill">
+        <span class="status-dot pulsing"></span>
+        <span id="clusterStatusText">Cluster Online (3 Replicas)</span>
+      </div>
+
+      <div class="top-controls">
+        <button id="btnToggleTraffic" class="btn btn-primary">
+          <span class="btn-icon">▶</span>
+          <span id="btnTrafficText">Start Auto Load</span>
+        </button>
+        <button id="btnBurst" class="btn btn-secondary">
+          <span>⚡ Burst 50 Req</span>
+        </button>
+        <button id="btnSingle" class="btn btn-outline">
+          <span>Step 1 Req</span>
+        </button>
+        <button id="btnReset" class="btn btn-ghost" title="Reset Telemetry">
+          <span>↺ Reset</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-grid">
+      <!-- Top Metrics Row -->
+      <section class="metrics-row">
+        <!-- P99 Card -->
+        <div class="metric-card highlight-card">
+          <div class="metric-header">
+            <span class="metric-label">P99 TAIL LATENCY ELIMINATION</span>
+            <span class="badge badge-success" id="p99SavingsBadge">-- % Faster</span>
+          </div>
+          <div class="metric-dual-value">
+            <div class="val-group">
+              <span class="val-sub">Baseline Proxy</span>
+              <span class="val-number text-danger" id="stdP99Val">0.0 ms</span>
+            </div>
+            <div class="val-divider">vs</div>
+            <div class="val-group">
+              <span class="val-sub">TailSquash Hedged</span>
+              <span class="val-number text-success" id="hedgeP99Val">0.0 ms</span>
+            </div>
+          </div>
+          <div class="metric-footer">
+            <span>Critical 99th percentile response time</span>
+          </div>
+        </div>
+
+        <!-- Budget & Overhead Card -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">HEDGE BUDGET & OVERHEAD</span>
+            <span class="badge badge-info" id="budgetStatusBadge">Within Budget (&lt;8%)</span>
+          </div>
+          <div class="metric-single-value">
+            <span class="val-number" id="overheadPercentVal">0.0%</span>
+            <span class="val-unit">extra requests</span>
+          </div>
+          <div class="budget-bar-container">
+            <div class="budget-bar" id="budgetProgressBar" style="width: 0%;"></div>
+          </div>
+          <div class="metric-footer">
+            <span><strong id="hedgedCountVal">0</strong> hedges fired / <strong id="totalReqVal">0</strong> total requests</span>
+          </div>
+        </div>
+
+        <!-- Speculative Rescues Card -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">SPECULATIVE RESCUES WON</span>
+            <span class="badge badge-purple" id="hedgeWinsBadge">0 Rescues</span>
+          </div>
+          <div class="metric-single-value">
+            <span class="val-number text-purple" id="hedgesWonVal">0</span>
+            <span class="val-unit">stalls bypassed</span>
+          </div>
+          <div class="metric-footer">
+            <span>Faster replica returned before straggler finished</span>
+          </div>
+        </div>
+
+        <!-- Server Waste Prevented Card -->
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-label">CONNECTIONS ABORTED</span>
+            <span class="badge badge-cyan">Zero Waste</span>
+          </div>
+          <div class="metric-single-value">
+            <span class="val-number text-cyan" id="abortedVal">0</span>
+            <span class="val-unit">connections killed</span>
+          </div>
+          <div class="metric-footer">
+            <span>Slow socket connections terminated via AbortController</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Charts Row -->
+      <section class="charts-row">
+        <!-- Live Request Timeline -->
+        <div class="chart-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h3>Live Request Latency Comparison Stream</h3>
+              <p>Real-time side-by-side latency ticks for incoming client requests</p>
+            </div>
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-box std-box"></span> Standard Proxy (Stragglers visible)</span>
+              <span class="legend-item"><span class="legend-box hedge-box"></span> TailSquash (Hedged & Flat)</span>
+            </div>
+          </div>
+          <div class="canvas-container">
+            <canvas id="timelineChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Statistical Percentiles Bar Chart -->
+        <div class="chart-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <h3>Statistical Percentile Distribution</h3>
+              <p>P50 (median), P90, P95, P99, and P99.9 latency breakdown</p>
+            </div>
+          </div>
+          <div class="canvas-container">
+            <canvas id="percentileChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Lower Controls and Topology Row -->
+      <section class="bottom-row">
+        <!-- Interactive Chaos Controls -->
+        <div class="glass-panel chaos-panel">
+          <div class="panel-header">
+            <h3>Chaos Engineering Control Deck</h3>
+            <span class="badge badge-warning">Live Injection</span>
+          </div>
+          <p class="panel-desc">Simulate cluster micro-stalls (Java GC pauses, noisy neighbors, and disk queue saturation).</p>
+          
+          <div class="chaos-slider-group">
+            <div class="slider-header">
+              <span>Straggler Rate:</span>
+              <span id="stragglerRateDisplay" class="slider-val">5.0%</span>
+            </div>
+            <input type="range" id="stragglerSlider" min="0" max="25" step="1" value="5">
+          </div>
+
+          <div class="quick-chaos-actions">
+            <button id="btnInjectStall" class="btn btn-chaos">
+              <span>⚠️ Force 1000ms Stall</span>
+            </button>
+            <button id="btnDegradeNode" class="btn btn-chaos">
+              <span>💥 Degrade Node Beta</span>
+            </button>
+            <button id="btnResetChaos" class="btn btn-outline-sm">
+              <span>Reset Chaos</span>
+            </button>
+          </div>
+
+          <div class="current-threshold-box">
+            <span>Dynamic Hedge Cutoff:</span>
+            <strong id="dynamicHedgeCutoff">~25.0 ms (P90)</strong>
+          </div>
+        </div>
+
+        <!-- Cluster Nodes Topology -->
+        <div class="glass-panel topology-panel">
+          <div class="panel-header">
+            <h3>Backend Replica Cluster Topology</h3>
+            <span class="badge badge-neutral">3 Upstream Nodes</span>
+          </div>
+
+          <div class="node-cards-grid">
+            <div class="node-card" id="cardNodeA">
+              <div class="node-top">
+                <span class="node-indicator online"></span>
+                <span class="node-name">Node Alpha</span>
+                <span class="node-port">:4001</span>
+              </div>
+              <div class="node-stats">
+                <div>Reqs: <strong id="nodeAReqs">0</strong></div>
+                <div>Stalls: <strong id="nodeAStalls" class="text-danger">0</strong></div>
+              </div>
+            </div>
+
+            <div class="node-card" id="cardNodeB">
+              <div class="node-top">
+                <span class="node-indicator online"></span>
+                <span class="node-name">Node Beta</span>
+                <span class="node-port">:4002</span>
+              </div>
+              <div class="node-stats">
+                <div>Reqs: <strong id="nodeBReqs">0</strong></div>
+                <div>Stalls: <strong id="nodeBStalls" class="text-danger">0</strong></div>
+              </div>
+            </div>
+
+            <div class="node-card" id="cardNodeC">
+              <div class="node-top">
+                <span class="node-indicator online"></span>
+                <span class="node-name">Node Gamma</span>
+                <span class="node-port">:4003</span>
+              </div>
+              <div class="node-stats">
+                <div>Reqs: <strong id="nodeCReqs">0</strong></div>
+                <div>Stalls: <strong id="nodeCStalls" class="text-danger">0</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Telemetry Stream Log -->
+        <div class="glass-panel log-panel">
+          <div class="panel-header">
+            <h3>Live Telemetry Feed</h3>
+            <span class="badge badge-success">Streaming</span>
+          </div>
+          <div class="log-stream" id="logStream">
+            <div class="log-item initial">System initialized. Ready for incoming requests...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

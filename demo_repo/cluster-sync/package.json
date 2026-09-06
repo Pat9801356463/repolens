@@ -1,0 +1,22 @@
+{
+  "name": "syncmesh",
+  "version": "1.0.0",
+  "description": "High-Performance P2P Swarm & Merkle-Tree Cluster File Synchronization Engine",
+  "main": "src/web/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/web/server.js",
+    "benchmark": "node src/benchmark/run_sync_benchmark.js"
+  },
+  "keywords": [
+    "nutanix",
+    "file-sync",
+    "distributed-systems",
+    "p2p",
+    "merkle-tree",
+    "delta-sync",
+    "vector-clock"
+  ],
+  "author": "SyncMesh Team",
+  "license": "MIT"
+}
